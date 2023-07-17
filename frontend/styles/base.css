@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap");
+
+/* Данный код не должен попасть в продакшен, написано на скорую руку и нарушает все принципы адекватной вёрстки */
+
+:root {
+  /* Colors */
+  --accent-c: rgb(80, 41, 131);
+  --accent-c-h: rgba(80, 41, 131, 0.7);
+
+  /* --darkTheme */
+  --bg-c: #242424;
+  --wrapper-c: #2f2f2f;
+  --wrapper-c-h: rgba(68, 68, 68, 0.7);
+  --bg-c-tp: rgba(36, 36, 36, 0.7);
+  --txt-c: rgba(255, 255, 255, 0.8);
+  --txt-c-h: rgba(255, 255, 255, 0.6);
+
+  /* Styles */
+  --space: 1rem;
+  --transition: all 0.5s ease;
+  --br-rad: var(--space);
+}
+
+[v-cloak] {
+  display: none;
+}
+
+/* Global Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  text-decoration: none;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body,
+input {
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  color: var(--txt-c);
+  line-height: 1;
+}
+
+body {
+  background-color: var(--bg-c);
+}
+
+table { 
+  border-collapse: separate;
+  border-spacing: var(--space);
+}
+
+td:nth-child(1) {
+  text-align: right;
+}
+
+td {
+  vertical-align: top;
+}
+
+td p {
+  font-weight: bold;
+}
+
+a,
+a:visited {
+  color: var(--txt-c);
+}
+
+svg {
+  fill: var(--txt-c);
+  transition: all 0.5s ease;
+}
+
+svg:hover {
+  fill: var(--txt-c-h);
+}
+
+small {
+  color: var(--txt-c-h);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+img {
+  width: 350px;
+  max-width: 100%;
+  height: auto;
+}
+
+input[type="text"] {
+  border-radius: var(--br-rad);
+  height: 35px;
+  padding: 0 var(--space);
+  background-color: var(--wrapper-c);
+  transition: var(--transition);
+}
+
+input:hover {
+  background-color: var(--wrapper-c-h);
+}
+
+/* Pseudo-Elements */
+
+::selection {
+  background-color: #4f13af33;
+}
+::-webkit-scrollbar {
+  display: none;
+}

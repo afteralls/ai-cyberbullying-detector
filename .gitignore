@@ -1,0 +1,5 @@
+.env
+main.session
+/__pycache__
+/main_model
+/data

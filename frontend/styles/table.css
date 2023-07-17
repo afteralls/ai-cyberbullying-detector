@@ -1,0 +1,23 @@
+.table table {
+  border-spacing: 1px;
+  border: none;
+  border-radius: var(--br-rad);
+  background: var(--wrapper-c);
+  padding: calc(var(--space) / 2);
+}
+
+.table th {
+  background-color: var(--wrapper-c-h);
+}
+
+.table th,
+.table td {
+  text-align: left;
+  border-radius: 5px;
+  border-spacing: none;
+  padding: 5px 10px;
+}
+
+.table tr:hover {
+  background-color: var(--wrapper-c-h);
+}

@@ -1,0 +1,276 @@
+@import "base.css";
+@import "pie.css";
+@import 'table.css';
+@import 'select.css';
+
+/* Данный код не должен попасть в продакшен, написано на скорую руку и нарушает все принципы адекватной вёрстки */
+
+/* Global Classes */
+
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space);
+}
+
+.sm {
+  gap: calc(var(--space) / 2) !important;
+}
+
+.left {
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
+
+.loading {
+  position: fixed;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--tp-c);
+  backdrop-filter: blur(8px);
+  z-index: 9;
+  text-align: center;
+  padding: var(--space);
+}
+
+.loading svg {
+  width: 20%;
+  height: auto;
+}
+
+.disabled {
+  filter: contrast(0.5);
+  cursor: default;
+  pointer-events: none;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+  align-items: center;
+}
+
+.wrapper {
+  gap: calc(var(--space) * 3) !important;
+}
+
+.column input {
+  width: 500px;
+}
+
+.toggler {
+  background-color: var(--wrapper-c);
+  border-radius: var(--space);
+  position: relative;
+}
+
+.toggler {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toggler small {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 35px;
+  padding: 0 var(--space);
+  z-index: 5;
+}
+
+.toggle-bg {
+  position: absolute;
+  height: 100%;
+  background-color: var(--accent-c);
+  border-radius: var(--space);
+  transition: var(--transition);
+}
+
+.mode {
+  left: 0;
+  width: 29%;
+}
+
+.mode.post {
+  left: 29%;
+  width: 24%;
+}
+
+.mode.list {
+  left: 53%;
+  width: 47%;
+}
+
+.com-toggle-bg {
+  position: absolute;
+  left: 0;
+  width: 33%;
+  height: 100%;
+  background-color: var(--accent-c);
+  border-radius: var(--space);
+  transition: var(--transition);
+}
+
+.com-toggle-bg.com-active {
+  left: 33%;
+  width: 67%;
+}
+
+.comments-section {
+  width: 735px;
+  padding: var(--space);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space);
+  justify-content: center;
+}
+
+.logo-row {
+  height: 170px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.right {
+  align-items: flex-end;
+  text-align: right;
+  max-width: 350px;
+}
+
+.btn {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  text-align: center;
+  background-color: var(--accent-c);
+  padding: 0 var(--space);
+  height: 35px;
+  border-radius: var(--br-rad);
+  transition: var(--transition);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.btn small {
+  color: var(--dark-txt-c);
+}
+
+.btn svg {
+  fill: var(--dark-txt-c);
+  height: 20px;
+  width: auto;
+}
+
+.btn:hover {
+  background-color: var(--accent-c-h);
+}
+
+.i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.i svg {
+  min-height: 24px !important;
+  height: 24px;
+  width: auto;
+  cursor: pointer;
+}
+
+.br {
+  width: 3px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.statistics {
+  padding: var(--space);
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  width: 550px;
+  padding-right: 100px;
+}
+
+.post-counter input {
+  width: 120px;
+}
+
+.abs {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+@media (max-width: 750px) {
+  body {
+    font-size: 14px;
+  }
+
+  .statistics {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column !important;
+  }
+
+  .logo-row {
+    flex-direction: column-reverse;
+    height: auto;
+  }
+
+  .br {
+    display: none;
+  }
+
+  img {
+    order: 1;
+  }
+
+  .right {
+    align-items: center;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .input-wrapper {
+    width: 100%;
+  }
+
+  .input-wrapper input {
+    width: 100%;
+    padding-right: 100px;
+  }
+
+  .comments-section {
+    width: 100vw;
+  }
+
+  .left {
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 450px) {
+  body {
+    font-size: 12px;
+  }
+}

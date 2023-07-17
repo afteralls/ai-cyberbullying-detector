@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <!-- Данный код не должен попасть в продакшен, написано на скорую руку и нарушает все принципы адекватной вёрстки -->
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="author" content="Daniil Sukharnikov" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#242424" />
+    <script src="eel.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="shortcut icon" href="img/favicon.png" type="image/png" />
+    <title>Cyberbullying Detector</title>
+  </head>
+
+  <body>
+    <div id="app" v-cloak>
+      <div v-show="isLoading" class="loading center column">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="1em"
+          height="1em"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="18" cy="12" r="0">
+            <animate
+              attributeName="r"
+              begin=".67"
+              calcMode="spline"
+              dur="1.5s"
+              keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+              repeatCount="indefinite"
+              values="0;2;0;0"
+            ></animate>
+          </circle>
+          <circle cx="12" cy="12" r="0" fill="currentColor">
+            <animate
+              attributeName="r"
+              begin=".33"
+              calcMode="spline"
+              dur="1.5s"
+              keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+              repeatCount="indefinite"
+              values="0;2;0;0"
+            ></animate>
+          </circle>
+          <circle cx="6" cy="12" r="0" fill="currentColor">
+            <animate
+              attributeName="r"
+              begin="0"
+              calcMode="spline"
+              dur="1.5s"
+              keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+              repeatCount="indefinite"
+              values="0;2;0;0"
+            ></animate>
+          </circle>
+        </svg>
+        <h2>Идёт сбор данных и их анализ, пожалуйста, подождите...</h2>
+      </div>
+      <div class="container">
+        <div class="column wrapper">
+          <div class="row logo-row">
+            <div class="column right">
+              <h1>Cyberbullying Detector</h1>
+              <p>
+                Анализатор комментариев, который позволяет отследить случаи
+                кибербуллинга в сети
+              </p>
+            </div>
+            <div class="br"></div>
+            <img src="img/logo.svg" alt="Лого" />
+          </div>
+          <div class="column">
+            <div class="row">
+              <div class="toggler center">
+                <div
+                  :class="{ 'mode': true, 'toggle-bg': true, 'post': mode === 'post', 'list': mode === 'list' }"
+                ></div>
+                <small @click="mode = 'group'">Группа</small>
+                <small @click="mode = 'post'">Пост</small>
+                <small @click="mode = 'list'">Список групп</small>
+              </div>
+              <div class="i" style="cursor: pointer;" @click="reset()">
+                <svg width="32" height="32" viewBox="0 0 21 21"><g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3.578 6.487A8 8 0 1 1 2.5 10.5"/><path d="M7.5 6.5h-4v-4"/></g></svg>
+              </div>
+            </div>
+            <div class="row">
+              <div v-if="mode !== 'post'" class="post-counter">
+                <input
+                  v-model="postCount"
+                  type="text"
+                  placeholder="Посты (10)"
+                />
+              </div>
+              <div class="input-wrapper">
+                <input
+                  v-model="data"
+                  type="text"
+                  :placeholder="getPlaceholder"
+                />
+                <div
+                  @click="mode === 'list' ? addGroup() : getData()"
+                  :class="{ btn: true, abs: true, disabled: data === '' }"
+                >
+                  <small>{{ mode === 'list' ? 'Добавить' : 'Поиск' }}</small>
+                </div>
+              </div>
+            </div>
+            <div v-if="groupList.length && !statArr.length" class="group-list column center">
+              <small>Список ссылок избранных групп</small>
+              <div class="table">
+                <table>
+                  <tr>
+                    <th><small>#</small></th>
+                    <th style="min-width: 150px;"><small>Ссылка</small></th>
+                    <th><small>Посты</small></th>
+                  </tr>
+                  <tr v-for="(link, idx) in groupList" :key="idx">
+                    <td>
+                      <h5>{{ idx + 1 }}</h5>
+                    </td>
+                    <td>
+                      <h5>@{{ link.group }}</h5>
+                    </td>
+                    <td>
+                      <h5>{{ link.posts }}</h5>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div @click="deepSearch()" class="btn"><small>Поиск</small></div>
+            </div>
+          </div>
+          <div v-if="statArr.length" class="column">
+            <div v-if="statArr.length > 1" class="column">
+              <h1>Глобальная статистика</h1>
+              <div class="row statistics">
+                <div class="pie" :style="{ '--p': globSt.toxic_rate }">
+                  <h2>{{ globSt.toxic_rate }}%</h2>
+                  <small>Toxic Level</small>
+                </div>
+                <div class="column sm left">
+                  <div class="row sm">
+                    <small>Токсичных комментариев:</small>
+                    <h3>{{ globSt.toxic }}</h3>
+                  </div>
+                  <div class="row sm">
+                    <small>Нейтральных комментариев:</small>
+                    <h3>{{ globSt.non_toxic }}</h3>
+                  </div>
+                  <div class="row sm">
+                    <small>Всего комментариев:</small>
+                    <h3>{{ globSt.all }}</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="table">
+                <table>
+                  <tr>
+                    <th><small>#</small></th>
+                    <th style="min-width: 150px;"><small>Группа</small></th>
+                    <th><small>Ур. токсичности</small></th>
+                  </tr>
+                  <tr v-for="(item, idx) in getToxicRate" :key="idx">
+                    <td>
+                      <h5>{{ idx + 1 }}</h5>
+                    </td>
+                    <td>
+                      <h5>{{ item.group }}</h5>
+                    </td>
+                    <td>
+                      <h5>{{ item.toxic_rate }}%</h5>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <h1>Статистика по группе</h1>
+              <div v-if="statArr.length > 1" @click="isOpen = !isOpen" class="select">
+                <svg :class="{ 'select-arrow': true, 'rotate': isOpen }" width="32" height="32" viewBox="0 0 24 24">
+                  <path d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4Z"/>
+                </svg>
+                <div class="selected"><small>{{ selModel }}</small></div>
+                <div v-show="isOpen" class="select-items">
+                  <div
+                    class="select-item"
+                    v-for="(item, idx) of groupList"
+                    :key="item"
+                    :data-item="item.group"
+                    :data-idx="idx"
+                  >
+                    <small>{{ item.group }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row statistics">
+              <div class="pie" :style="{ '--p': toxicLevel }">
+                <h2>{{ toxicLevel }}%</h2>
+                <small>Toxic Level</small>
+              </div>
+              <div class="column sm left">
+                <div class="row sm">
+                  <small>Токсичных комментариев:</small>
+                  <h3>{{ st.toxic }}</h3>
+                </div>
+                <div class="row sm">
+                  <small>Нейтральных комментариев:</small>
+                  <h3>{{ st['non_toxic'] }}</h3>
+                </div>
+                <div class="row sm">
+                  <small>Всего комментариев:</small>
+                  <h3>{{ st.all }}</h3>
+                </div>
+                <div class="btn">
+                  <small @click="showComments = !showComments">
+                    {{ !showComments ? 'Показать' : 'Скрыть' }} комментарии
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div v-if="showComments" class="comments-section column">
+              <h1>Комментарии</h1>
+              <div class="toggler center">
+                <div
+                  :class="{ 'com-toggle-bg': true, 'com-active': showToxic }"
+                ></div>
+                <small @click="showToxic = false" class="active">Все</small>
+                <small @click="showToxic = true">Токсичные</small>
+              </div>
+              <table v-if="showToxic">
+                <tr v-for="(item, idx) in toxicComments" :key="idx">
+                  <td style="width: 30%"><h3>{{ item.user }}</h3></td>
+                  <td style="width: 70%"><p>{{ item.comment }}</p></td>
+                </tr>
+              </table>
+              <table v-else>
+                <tr v-for="(item, idx) in allComments" :key="idx">
+                  <td style="width: 30%"><h3>{{ item.user }}</h3></td>
+                  <td
+                    :style="{ width: '70%', color: item.toxic_rate > 0.75 ? 'orange' : ''}"
+                  >
+                    <p>{{ item.comment }}</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="./main.js"></script>
+  </body>
+</html>
